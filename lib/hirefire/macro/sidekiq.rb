@@ -29,17 +29,7 @@ module HireFire
           memo
         end
 
-        in_retry = ::Sidekiq::RetrySet.new.inject(0) do |memo, job|
-          memo += 1 if queues.include?(job["queue"]) && job.at <= Time.now
-          memo
-        end
-
-        in_progress = ::Sidekiq::Worker.new.inject(0) do |memo, job|
-          memo += 1 if queues.include?(job[1]["queue"]) && job[1]["run_at"] <= Time.now.to_i
-          memo
-        end
-
-        in_queues + in_schedule + in_retry + in_progress
+        in_queues + in_schedule
       end
     end
   end
